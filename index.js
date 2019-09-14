@@ -1,20 +1,25 @@
-console.log('output');
+console.log('hello world!');
 
+const SW_API = 'https://swapi.co/api/';
 const output = document.getElementById('output');
-let list = null;
-const starWarsURL = 'https://swapi.co/api/films';
 
-const promise = fetch(starWarsURL);
-console.log(promise);
-
-const films = promise.then(response => response.json()).then(result => {
-    list = result.results;
-    console.log(`returned from future list ${list}`);
-
-    list
-        .sort((a, b) => a.episode_id - b.episode_id)
-        .map(film => {
-            console.log(`${film.episode_id} ${film.title}`)
-        });
+fetch(SW_API + 'films')
+    .then(
+        response => {
+            // if (!response.ok) throw new Error('error accessing the resource');
+            return response.json()
+                .then(films => {
+                    output.innerText = processResults(films.results);
+                });
+        },
+    ).catch(error => {
+    console.warn(error);
+    output.innerText = ':(';
 });
-console.log(`immediate result of list=${list}`);
+
+function processResults(films) {
+    return films
+        .sort((a, b) => a.episode_id - b.episode_id)
+        .map(film => `${film.episode_id} ${film.title} ${film.release_date}`)
+        .join('\n');
+}
