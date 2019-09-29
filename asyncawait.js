@@ -15,8 +15,11 @@ const fetchAPI = async (endpoint) => {
 };
 
 const main = async () => {
-    const films = await fetchAPI('films');
-    out.innerText = `${films.count} films`;
+    const [films, planets] = await Promise.all([
+        fetchAPI('films'),
+        fetchAPI('planets')
+    ]);
+    out.innerText = `${films.count} films and ${planets.count} planets`;
 };
 
 main();
